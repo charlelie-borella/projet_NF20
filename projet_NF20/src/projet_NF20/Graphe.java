@@ -78,10 +78,14 @@ public class Graphe {
 		return this.gr;
 	}
 
-	public ArrayList<ArrayList<Integer>> getListGraphe() {
+	public ArrayList<ArrayList<Integer>> getList2D() {
 		return this.list2D;
 	}
 
+	public ArrayList<ArrayList<ArrayList<Integer>>> getList3D() {
+		return this.list3D;
+	}
+	
 	public String lireFichier(String file) {
 		String chaine = "";
 		try {
