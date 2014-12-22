@@ -1,108 +1,206 @@
 package projet_NF20;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class Kruskal {
 	
-	public int[][] Kruskal(Graphe g, ArrayList<ArrayList<ArrayList<Integer>>> gr){
+	private int sommet1; //sommet1
+	private int sommetAdjacent; //sommetAdjacent
+	private int tmpPoids; //poids de l'arête
+	private int indexSommetAdjacent;
+	
+	private ArrayList<ArrayList<Integer>> temp; //ici stock temporairement juste les arêtes
+	private ArrayList<Integer> sommetParcouru; //liste des sommets parcourus pour l'algorithme
+	
+	private ArrayList<ArrayList<ArrayList<Integer>>> gr; //liste où l'on va stocker la liste3d
+	private ArrayList<Integer> test; //
+	int poidsFinal;
+	private long[] grapheComplexite;
+	
+	public Kruskal(Graphe g){
+		sommet1 = 0;
+		sommetAdjacent = 0;
+		tmpPoids = -1;
+		indexSommetAdjacent = -1;
+		temp = new ArrayList<ArrayList<Integer>>();
+		sommetParcouru = new ArrayList<Integer>();
+		this.gr = g.getList3D();
+		test = new ArrayList<Integer>();
+		poidsFinal = 0;
+		grapheComplexite =  new long[this.gr.size()];
+	}
+	
+	public void kruskal(){
 		
-		ArrayList<Integer> sommetParcouru = new ArrayList<Integer>();
-		ArrayList<ArrayList<Integer>> temp = new ArrayList<ArrayList<Integer>>();
+		triCroissant();
 		
-		int[][] temp1 = new int[poids.length][];
-		
-		int tmp1 = 0; 
-		int tmp2 = 0;
-		int tmpPoids = -1;
-		
-		for(int l = 0; l<g.nbAretes; l++){
-			//trouve la plus petite ar�te
-			for (int i = 0; i < gr.size();i++){
-				for (int j = 0; j < gr.get(i).size();j++){
-					if(tmpPoids==-1 || tmpPoids>gr.get(i).get(j).get(1)){
-						tmpPoids = gr.get(i).get(j).get(1);
-						tmp1 = i;
-						tmp2 = j;				
-					}
+		for(int l = 0; l<this.gr.size()-1; l++){
+			
+			long debut = System.currentTimeMillis();
+			long dureeDeTraitement = 0;
+			
+			//trouve la plus petite arête
+			trouverPetiteArete();
+			
+			poidsFinal += tmpPoids;
+			
+			//enlève la plus petite arête trouvée pour ne pas la reprendre
+			supprimerSommet(); 
+			ajoutSommet();
+			regarderTemp();
+			dureeDeTraitement = (System.currentTimeMillis()-debut);
+			this.grapheComplexite[l] = dureeDeTraitement;
+		}
+		System.out.println("Coût : "+poidsFinal);
+	}
+	
+	private void trouverPetiteArete(){
+		this.tmpPoids=-1;
+		this.sommet1=-1;
+		this.sommetAdjacent=-1;
+		this.indexSommetAdjacent=-1;
+		for (int i = 0; i < gr.size();i++){
+			for (int j = 0; j < gr.get(i).size();j++){
+				if(tmpPoids==-1 || tmpPoids>gr.get(i).get(j).get(1)){
+					//stock le poid
+					tmpPoids = gr.get(i).get(j).get(1);
+					//stock le sommet1
+					sommet1 = i;
+					//stock le sommetAdjacent adjacent
+					sommetAdjacent = gr.get(i).get(j).get(0);	
+					indexSommetAdjacent = j;
 				}
 			}
-			
-			temp1[tmp1][tmp2] = poids[tmp1][tmp2];
-			poids[tmp1][tmp2]=-1;
-			
-			//regarder si dans temp il y a un sommet qui est maintenant dans SommetParcouru
-			//si oui, ajouter le sommet manquant
-			if(!temp.isEmpty()){
-				for (int i = 0; i < temp.size(); i++){
-					for (int j = 0; j < temp.get(i).size(); j++){
-						for(int k = 0; k < sommetParcouru.size(); k++){
-							if(temp.get(i).get(j)==sommetParcouru.get(k)){
-								sommetParcouru.addAll(temp.get(i));
-							}
+		}
+	}
+	
+	//à regarder ici problème ! d'ajout à la liste sommet
+	private void regarderTemp(){
+		if(!temp.isEmpty()){
+			//je parcours temp pour avoir la ou les arraylist contenant les sommets
+			for (int i = 0; i < temp.size(); i++){
+				//je parcours les sommets de 0 à 1 du coup (taille de 2)
+				for (int j = 0; j < temp.get(i).size(); j++){
+					//ensuite ici je parcours tous les sommets pour regarder si les sommets de temp sont dedans ou non
+					for(int k = 0; k < sommetParcouru.size(); k++){
+						//si un sommet est dedans
+						if(temp.get(i).get(j)==sommetParcouru.get(k)){
+							sommetParcouru.add(temp.get(i).get(0));
+							sommetParcouru.add(temp.get(i).get(1));
+							temp.get(i).clear();
+							break;
 						}
 					}
 				}
-			} 
-
-			sommetParcouru.add(tmp1);
-			sommetParcouru.add(tmp2);
-			
-			for(int i = 0; i < sommetParcouru.size(); i++){
-				
 			}
-			
-			//regarder si tmp1 est d�j� dans sommetParcouru
-			//si oui, ajouter juste j � la liste 
-			//si tmp2 est d�j� dans la liste ajouter i
-			//si ni i ni j ne sont dans la liste alors les ajouter dans temp
-			//supprimer les doublons dans la liste sommetParcouru
-			/*
-			ArrayList list = new ArrayList() ;
-	        Set set = new HashSet() ;
-	        set.addAll(list) ;
-	        ArrayList distinctList = new ArrayList(set) ;
-			 */
-		}
-		return temp1;
-
-		/*int[][] temp1 = new int[g.gr.length][];
-		int[][] temp2 = g.gr;
-
-		int nb1 = -1;
-		int nb2 = -1;
-		boolean test;
-		
-		//je remplie la matrice avec la valeur -1
-		for(int i = 0; i<g.gr.length; i++){
-			for(int j = 0; j<g.gr[i].length; j++){
-				temp1[i][j] = -1;
-			}
-		}
-		
-		for(int i = 0; i<g.nbAretes; i++){
-			for(int j = 0; j<g.nbAretes-1; j++){
-				for(int k = 0; k<g.nbAretes-1; k++){
-					if(temp2[j][k]<temp2[j+1][k+1]){
-						nb1=j;
-						nb2=k;
-					}
-				}
-			}
-			temp1[nb1][nb2]=g.gr[nb1][nb2];
-			temp2[nb1][nb2]=-1;
-			
-			test = rechercheCycle(temp1);
-			if (test == true){
-				temp1[nb1][nb2]=-1;
-			}
-		}
-		return temp1;*/
+		} 
 	}
 	
-	public boolean rechercheCycle(int[][] tmpGr){
-		boolean b = true;
+	private void ajoutSommet(){
+		boolean bool = false;
+		if (sommetParcouru.isEmpty()){
+			sommetParcouru.add(sommet1);
+			sommetParcouru.add(sommetAdjacent);
+		}else{
+			//parcour de la liste pour voir si sommet adjacent y est
+			for(int i = 0; i < sommetParcouru.size(); i++){
+				if(sommetAdjacent==sommetParcouru.get(i))
+				{
+					bool = true;
+					sommetParcouru.add(sommet1);
+					break;
+				}
+				else if(sommet1==sommetParcouru.get(i)){
+					bool=true;
+					sommetParcouru.add(sommetAdjacent);
+					break;
+				}
+			}
+			if(!bool){
+				temp.add(temp.size(), test);
+				//les ajouter dans la liste temp
+				temp.get(temp.size()-1).add(sommet1);
+				temp.get(temp.size()-1).add(sommetAdjacent);	
+			}		
+		}
+	}
+	
+	public void triCroissant(){
+		boolean trie;
+	  
+		long debut = System.currentTimeMillis();
+		for (int i = 0; i < this.gr.size() ; i++) {
+			int taille = this.gr.get(i).size();
+			do
+			{
+				trie = false;
+			    for(int j=0 ; j < taille-1 ; j++)
+			    {
+			        if(this.gr.get(i).get(j).get(1) > this.gr.get(i).get(j+1).get(1))
+			        {
+			          	int tempoSommet = this.gr.get(i).get(j).get(0).intValue();
+			            int tempoPoids = this.gr.get(i).get(j).get(1).intValue();
+			            this.gr.get(i).get(j).set(0, this.gr.get(i).get(j+1).get(0).intValue());
+			            this.gr.get(i).get(j).set(1, this.gr.get(i).get(j+1).get(1).intValue());
+			            this.gr.get(i).get(j+1).set(0, tempoSommet);
+			            this.gr.get(i).get(j+1).set(1, tempoPoids);
+			            trie = true;
+			        }			       
+			    }
+			    taille--;
+			}while(trie);
+		}
+		System.out.println("\n \n Temps d'éxécution tri Croissant: " + ((System.currentTimeMillis() - debut) / 1000) + "\n");
+	}
+	
+	public void supprimerSommet(){
+		this.gr.get(sommet1).remove(indexSommetAdjacent);
+		for (int j = 0; j < this.gr.get(indexSommetAdjacent).size() ; j++) {
+			if(this.gr.get(sommetAdjacent).get(j).get(0) == sommet1){
+				this.gr.get(sommetAdjacent).remove(j);
+				break;
+			}
+		}
+	}
+	
+	public void recupererGraphe(){
+
+		File f = new File ("kruskal1Complexite.txt");
+		try
+		{
+		    FileWriter fw = new FileWriter (f);
+		 
+		    for (int i = 0; i < this.grapheComplexite.length; i++) {
+		    		fw.write(i + "\n");	
+		    }		    
+		    fw.write("Sommet \n");		    
+		    for (int i = 0; i < this.grapheComplexite.length; i++) {
+	    			long valeur = this.grapheComplexite[i];
+	    			fw.write(valeur + "\n"); 		
+	    }
+		    System.out.println("Graphe récupéré");
+		    fw.close();
+		}
+		catch (IOException exception)
+		{	
+			System.out.println ("Erreur lors de la lecture : " + exception.getMessage());
+		}
+	}
+
+	
+	public static void main(String[] args) {
+		Graphe g = new Graphe("inst_v1000.dat");
 		
-		return b;
+		Kruskal k = new Kruskal(g);
+		long debut = System.currentTimeMillis();
+		k.kruskal();
+		System.out.println((System.currentTimeMillis() - debut) / 1000);
 	}
 }
+

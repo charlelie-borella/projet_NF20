@@ -1,0 +1,244 @@
+package projet_NF20;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+
+public class Kruskal {
+	
+	private int tmp1; //sommet1
+	private int tmp2; //sommet2
+	private int tmpPoids; //poids de l'arête
+	private int essai;
+	
+	private ArrayList<ArrayList<Integer>> temp; //ici stock temporairement juste les arêtes
+	//private ArrayList<ArrayList<ArrayList<Integer>>> temp; //pour remplacer plus tars temp et temp1 en stockant les arêtes et le poids
+	private ArrayList<Integer> sommetParcouru; //liste des sommets parcourus pour l'algorithme
+	//à enlever si utilisation de ArrayList<ArrayList<ArrayList<Integer>>> temp
+	private int[][] temp1; //matrice avec les poids
+	
+	private Graphe g; //graphe à étudier
+	private ArrayList<ArrayList<ArrayList<Integer>>> gr; //liste où l'on va stocker la liste3d
+	private ArrayList<Integer> test; //
+	
+	public Kruskal(Graphe g){
+		tmp1 = 0;
+		tmp2 = 0;
+		tmpPoids = -1;
+		essai = -1;
+		temp = new ArrayList<ArrayList<Integer>>();
+		//temp = new ArrayList<ArrayList<ArrayList<Integer>>>();
+		sommetParcouru = new ArrayList<Integer>();
+		this.g = g;
+		this.gr = g.getList3D();
+		temp1 = new int[this.gr.size()][this.gr.size()];
+		test = new ArrayList<Integer>();
+	}
+	
+	public /*ArrayList<ArrayList<ArrayList<Integer>>>*/ int[][] kruskal(){
+		triCroissant();
+	//	affichageList3D();
+		
+		boolean b = true;
+		
+		for(int l = 0; l<this.gr.size()-1; l++){
+			affichageList3D();
+			//trouve la plus petite arête
+			trouverPetiteArete();
+			
+			
+			//test des sommets que retourne la méthode
+			System.out.println("Sommet:" + tmp1+ " |  Sommet adjacent:" + tmp2+ " |  Poids:"+tmpPoids);
+			
+			//stock dans la matrice le poid
+			temp1[tmp1][tmp2] = tmpPoids;
+			//temp.get(tmp1).get(tmp2).set(1, tmpPoids);
+			
+			//enlève la plus petite arête trouvée pour ne pas la reprendre
+			//gr.get(tmp1).get(essai).remove(1);
+			gr.get(tmp1).remove(essai);
+			/*gr.get(tmp1).get(essai).set(1,-1);*/
+			
+			//regarder si dans temp il y a un sommet qui est maintenant dans SommetParcouru
+			//si oui, ajouter le sommet manquant
+			regarderTemp(); 
+			
+			ajoutSommet(b);
+			afficherListSommetsParcourus();
+		}
+		Set set = new HashSet() ;
+        set.addAll(sommetParcouru) ;
+        sommetParcouru.clear();
+        sommetParcouru = new ArrayList(set) ;
+        sommetParcouru.toString();
+		return /*temp*/ temp1;
+	}
+	
+	public void triCroissant()
+	{
+		boolean trie;
+	  
+		long debut = System.currentTimeMillis();
+		for (int i = 0; i < this.gr.size() ; i++) {
+			int taille = this.gr.get(i).size();
+			do
+			{
+				trie = false;
+			    for(int j=0 ; j < taille-1 ; j++)
+			    {
+			        if(this.gr.get(i).get(j).get(1) > this.gr.get(i).get(j+1).get(1))
+			        {
+			          	int tempoSommet = this.gr.get(i).get(j).get(0).intValue();
+			            int tempoPoids = this.gr.get(i).get(j).get(1).intValue();
+			            this.gr.get(i).get(j).set(0, this.gr.get(i).get(j+1).get(0).intValue());
+			            this.gr.get(i).get(j).set(1, this.gr.get(i).get(j+1).get(1).intValue());
+			            this.gr.get(i).get(j+1).set(0, tempoSommet);
+			            this.gr.get(i).get(j+1).set(1, tempoPoids);
+			            trie = true;
+			        }			       
+			    }
+			    taille--;
+			}while(trie);
+		}
+		System.out.println("\n \n Temps d'éxécution tri Croissant: " + ((System.currentTimeMillis() - debut) / 1000) + "\n");
+	}
+	
+	private void trouverPetiteArete(){
+		this.tmpPoids=-1;
+		this.tmp1=0;
+		this.tmp2=0;
+		this.essai=-1;
+		
+		for (int i = 0; i < gr.size();i++){
+				if(tmpPoids==-1 || tmpPoids>gr.get(i).get(0).get(1)){
+					//stock le poid
+					tmpPoids = gr.get(i).get(0).get(1);
+					//stock le sommet1
+					tmp1 = i;
+					//stock le sommet2 adjacent
+					tmp2 = gr.get(i).get(0).get(0);
+					//Le sommet stocker
+					essai = 0;
+				}
+			}
+		}
+	
+	private void regarderTemp(){
+		if(!temp.isEmpty()){
+			for (int i = 0; i < temp.size(); i++){
+				for (int j = 0; j < temp.get(i).size(); j++){
+					for(int k = 0; k < sommetParcouru.size(); k++){
+						//a changer si temp change
+						if(temp.get(i).get(j)/*.get(O)*/==sommetParcouru.get(k)){
+							sommetParcouru.addAll(temp.get(i));
+							//à changer si temp change
+							temp1[temp.get(i).get(0)][temp.get(i).get(1)] = gr.get(temp.get(i).get(0)).get(temp.get(i).get(1)).get(1);
+							temp.get(i).clear();
+						}
+					}
+				}
+			}
+		} 
+	}
+	
+	private void testSommetParcouru(boolean b, ArrayList<Integer> test){
+		//s'il n'y est pas
+		if(!b){
+			//parcour de la liste pour voir si tmp2 y est
+			for(int i = 0; i < sommetParcouru.size(); i++){
+				System.out.println("tmp2 est il dans la liste ? "+tmp2);
+				b = tmp2==sommetParcouru.get(i);
+				//si il y est
+				if(b){
+					for(int j = 0; j < sommetParcouru.size(); j++){
+						b = tmp1==sommetParcouru.get(i);
+						if(b){
+							break;
+						}
+					}
+					if(!b){
+						//j'ajoute tmp2 et je sors
+						sommetParcouru.add(tmp1);
+						break;
+					}
+				}
+			}
+			//si aucun n'y est 
+			if(!b){
+				//les ajouter dans la liste temp
+				System.out.println("temp : "+tmp1+" "+tmp2);
+				if(temp.isEmpty()){
+					test.add(tmp1);
+					test.add(tmp2);
+					temp.add(0,test);
+				} else{
+					test.add(tmp1);
+					test.add(tmp2);
+					temp.add(temp.size(),test);
+				}
+				test.clear();
+			}
+		}
+	}
+	
+	
+	private void ajoutSommet(boolean b){
+		if (sommetParcouru.isEmpty()){
+			sommetParcouru.add(tmp1);
+			sommetParcouru.add(tmp2);
+		}else{
+			//parcour de la liste pour voir si tmp1 y est
+			for(int i = 0; i < sommetParcouru.size(); i++){
+				b = tmp1==sommetParcouru.get(i);
+				//System.out.println("tmp1 est il dans la liste ? "+tmp1);
+				//si il y est
+				if(b){
+					//j'ajoute tmp2 et je sors
+					sommetParcouru.add(tmp2);
+					break;
+				}
+			}
+			testSommetParcouru(b, test);
+		}
+	}
+	
+	public void afficherListSommetsParcourus(){
+		String res = "";
+		for (int i = 0; i < this.sommetParcouru.size(); i++) {
+			res+= sommetParcouru.get(i) + " ";
+		}
+		System.out.println("Liste des sommets parcourus: " + res);
+	}
+	
+	public void affichageList3D() {
+		long debut = System.currentTimeMillis();
+		System.out.println("Affichage de l'ArrayList ");
+		for (int i = 0; i < this.g.getList3D().size(); i++) {
+			String affichage = "S " + i + " A : ";
+			for (int j = 0; j < this.g.getList3D().get(i).size(); j++) {
+				for (int j2 = 0; j2 < this.g.getList3D().get(i).get(j).size(); j2++) {
+					affichage += this.g.getList3D().get(i).get(j).get(j2) + " ";
+				}
+			}
+			System.out.println(affichage);
+		}
+		System.out.println("\n \n Temps d'éxécution affichage liste3D: " + ((System.currentTimeMillis() - debut) / 1000) + "\n");
+
+	}
+	
+	public static void main(String[] args) {
+		Graphe g = new Graphe("graphe_k5.dat");
+		Kruskal k = new Kruskal(g);
+		
+		int[][] test = k.kruskal();
+		
+		  for(int i = 0 ; i < test.length; i++ ){
+		   for(int j = 0; j< test.length; j++){
+		    System.out.print(" "+test[i][j]);
+		   }
+		   System.out.print("\n");
+		  }
+	}
+}
+

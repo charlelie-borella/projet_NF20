@@ -8,11 +8,11 @@ import java.util.ArrayList;
 
 public class Graphe {
 
-	int[][] gr;
-	boolean estOriente;
-	int nbNodes;
-	ArrayList<ArrayList<Integer>> list2D = new ArrayList<ArrayList<Integer>>();
-	ArrayList<ArrayList<ArrayList<Integer>>> list3D = new ArrayList<ArrayList<ArrayList<Integer>>>();
+	private int[][] gr;
+	private boolean estOriente;
+	private int nbNodes;
+	private ArrayList<ArrayList<Integer>> list2D = new ArrayList<ArrayList<Integer>>();
+	private ArrayList<ArrayList<ArrayList<Integer>>> list3D = new ArrayList<ArrayList<ArrayList<Integer>>>();
 
 	public Graphe(String file) {
 		String chaine = lireFichier(file);

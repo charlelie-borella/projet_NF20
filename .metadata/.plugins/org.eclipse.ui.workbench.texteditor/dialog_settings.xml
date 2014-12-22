@@ -2,18 +2,25 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="sommetVisite" key="selection"/>
+		<item value="getSomme" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="getSomme"/>
+			<item value="supcycle"/>
+			<item value="essai"/>
+			<item value="tmp2"/>
+			<item value="tmp1"/>
 			<item value="sommetVisite"/>
 			<item value="ajout"/>
 			<item value="ajoute"/>
-			<item value="ajouter"/>
 		</list>
 		<list key="replacehistory">
+			<item value="indexSommetAdjacent"/>
+			<item value="sommetAdjacent"/>
+			<item value="sommet1"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
