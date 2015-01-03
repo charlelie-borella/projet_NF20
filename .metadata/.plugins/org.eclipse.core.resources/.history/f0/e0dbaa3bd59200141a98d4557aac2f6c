@@ -154,7 +154,7 @@ public class Prim {
 	
 	public void recupererGraphe(){
 
-		File f = new File ("primComplexite1000.txt");
+		File f = new File ("primComplexite.txt");
 		try
 		{
 		    FileWriter fw = new FileWriter (f);
@@ -186,7 +186,7 @@ public class Prim {
 		//String file = sc.nextLine();
 
 		//Graphe g = new Graphe("graphe_k5.dat");
-		Graphe g = new Graphe("inst_v1000.dat");
+		Graphe g = new Graphe("inst_v400.dat");
 		Prim p = new Prim(g);
 		//p.affichageList3D();
 		long debut = System.currentTimeMillis();

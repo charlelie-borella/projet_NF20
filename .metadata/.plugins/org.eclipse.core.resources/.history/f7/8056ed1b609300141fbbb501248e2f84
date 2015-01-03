@@ -154,7 +154,7 @@ public class Prim {
 	
 	public void recupererGraphe(){
 
-		File f = new File ("primComplexite1000.txt");
+		File f = new File ("primComplexite.txt");
 		try
 		{
 		    FileWriter fw = new FileWriter (f);

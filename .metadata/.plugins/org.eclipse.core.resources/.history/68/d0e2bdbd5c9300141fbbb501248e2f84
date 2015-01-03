@@ -177,7 +177,7 @@ public class Kruskal {
 	
 	public void recupererGraphe(){
 
-		File f = new File ("kruskalComplexite1000.txt");
+		File f = new File ("kruskalComplexite.txt");
 		try
 		{
 		    FileWriter fw = new FileWriter (f);

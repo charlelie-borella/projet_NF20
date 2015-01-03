@@ -1,6 +1,5 @@
 package projet_NF20;
 
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -41,15 +40,10 @@ public class Kruskal {
 		
 		triCroissant();
 		
-		//graphe 1
-		long debut = System.currentTimeMillis();
-		long dureeDeTraitement = 0;
-		
 		for(int l = 0; l<this.gr.size()-1; l++){
 			
-			/*//graphe 2
 			long debut = System.currentTimeMillis();
-			long dureeDeTraitement = 0;*/
+			long dureeDeTraitement = 0;
 			
 			//trouve la plus petite arête
 			trouverPetiteArete();
@@ -162,7 +156,7 @@ public class Kruskal {
 			    taille--;
 			}while(trie);
 		}
-		System.out.println("\n \n Temps d'éxécution tri Croissant: " + ((System.currentTimeMillis() - debut) / 1000) + " sec \n");
+		System.out.println("\n \n Temps d'éxécution tri Croissant: " + ((System.currentTimeMillis() - debut) / 1000) + "\n");
 	}
 	
 	public void supprimerSommet(){
@@ -177,7 +171,7 @@ public class Kruskal {
 	
 	public void recupererGraphe(){
 
-		File f = new File ("kruskalComplexite1000.txt");
+		File f = new File ("kruskal1Complexite.txt");
 		try
 		{
 		    FileWriter fw = new FileWriter (f);
@@ -198,28 +192,15 @@ public class Kruskal {
 			System.out.println ("Erreur lors de la lecture : " + exception.getMessage());
 		}
 	}
+
 	
-	
-	public static void main(String[] args){
-		/*Scanner sc = new Scanner(System.in);
-		
-		//choix du fichier
-		System.out.println("Veuillez choisir le fichier à lire");
-		String file = sc.nextLine();
-		
-		Graphe g = new Graphe(file);*/
-		
+	public static void main(String[] args) {
 		Graphe g = new Graphe("inst_v1000.dat");
 		
-		//int [][] test;
-		long debut = System.currentTimeMillis();
 		Kruskal k = new Kruskal(g);
-		System.out.println("Résultats Kruskal : ");
+		long debut = System.currentTimeMillis();
 		k.kruskal();
-		System.out.println("\n \n Temps d'éxécution: ");
-		System.out.println((System.currentTimeMillis() - debut) /*/ 1000*/+" ms ");
-		k.recupererGraphe();
-		
+		System.out.println((System.currentTimeMillis() - debut) / 1000);
 	}
 }
 

@@ -177,7 +177,7 @@ public class Kruskal {
 	
 	public void recupererGraphe(){
 
-		File f = new File ("kruskalComplexite1000.txt");
+		File f = new File ("kruskalComplexite.txt");
 		try
 		{
 		    FileWriter fw = new FileWriter (f);
@@ -197,29 +197,6 @@ public class Kruskal {
 		{	
 			System.out.println ("Erreur lors de la lecture : " + exception.getMessage());
 		}
-	}
-	
-	
-	public static void main(String[] args){
-		/*Scanner sc = new Scanner(System.in);
-		
-		//choix du fichier
-		System.out.println("Veuillez choisir le fichier à lire");
-		String file = sc.nextLine();
-		
-		Graphe g = new Graphe(file);*/
-		
-		Graphe g = new Graphe("inst_v1000.dat");
-		
-		//int [][] test;
-		long debut = System.currentTimeMillis();
-		Kruskal k = new Kruskal(g);
-		System.out.println("Résultats Kruskal : ");
-		k.kruskal();
-		System.out.println("\n \n Temps d'éxécution: ");
-		System.out.println((System.currentTimeMillis() - debut) /*/ 1000*/+" ms ");
-		k.recupererGraphe();
-		
 	}
 }
 

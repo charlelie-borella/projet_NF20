@@ -177,7 +177,7 @@ public class Kruskal {
 	
 	public void recupererGraphe(){
 
-		File f = new File ("kruskalComplexite1000.txt");
+		File f = new File ("kruskalComplexite.txt");
 		try
 		{
 		    FileWriter fw = new FileWriter (f);
@@ -209,7 +209,7 @@ public class Kruskal {
 		
 		Graphe g = new Graphe(file);*/
 		
-		Graphe g = new Graphe("inst_v1000.dat");
+		Graphe g = new Graphe("inst_v100.dat");
 		
 		//int [][] test;
 		long debut = System.currentTimeMillis();
