@@ -1,0 +1,239 @@
+package projet_NF20;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+
+
+public class Elimination {
+
+	ArrayList<ArrayList<ArrayList<Integer>>> list3D = new ArrayList<ArrayList<ArrayList<Integer>>>();
+	ArrayList<ArrayList<ArrayList<Integer>>> grapheConstruction = new ArrayList<ArrayList<ArrayList<Integer>>>();
+	ArrayList<Integer> sommetVisite = new ArrayList<Integer>();
+	ArrayList<ArrayList<Integer>> cycle = new ArrayList<ArrayList<Integer>>();
+	String erreur;
+	int nbNodes;
+	private long[] grapheComplexite;
+	
+	public Elimination(ArrayList<ArrayList<ArrayList<Integer>>> l3, int noeud){
+		this.grapheComplexite = new long[this.list3D.size()];
+		list3D=l3;
+		nbNodes=noeud;
+		initialisationGrapheConstruction();		
+	}
+	
+	public void EliminationDeCycle(int actu, int pred){
+		boolean dejaViste=false;
+		if(sommetVisite.isEmpty()==false){
+			for(int i = 0; i<sommetVisite.size();i++){
+				if(sommetVisite.get(i)==actu){
+				dejaViste=true;
+			
+				}
+			}
+		}
+		boolean dejapresente=false;
+		for(int n = 0;n<= grapheConstruction.get(actu).size()-1;n++){
+			if(grapheConstruction.get(actu).get(n).get(0)==pred){
+				dejapresente=true;
+				
+			}
+		}
+		if(pred != -1 && dejapresente==false){
+			grapheConstruction.get(actu).add(new ArrayList<Integer>());
+			grapheConstruction.get(actu).get(grapheConstruction.get(actu).size()-1).add(pred);
+			grapheConstruction.get(pred).add(new ArrayList<Integer>());
+			grapheConstruction.get(pred).get(grapheConstruction.get(pred).size()-1).add(actu);
+			
+		
+		for(int j = 0 ; j<= list3D.get(actu).size()-1;j++){
+			if(list3D.get(actu).get(j).get(0)==pred){
+				
+				grapheConstruction.get(actu).get(grapheConstruction.get(actu).size()-1).add(list3D.get(actu).get(j).get(1));
+				grapheConstruction.get(pred).get(grapheConstruction.get(pred).size()-1).add(list3D.get(actu).get(j).get(1));
+			}
+		}
+		}
+		if(dejaViste!=true){
+			sommetVisite.add(actu);
+			long debut = System.currentTimeMillis();
+			long dureeDeTraitement = 0;	
+			for(int k = 0; k<= list3D.get(actu).size()-1;k++){
+			
+				if(list3D.get(actu).get(k).get(0) != pred){
+					EliminationDeCycle(list3D.get(actu).get(k).get(0), actu);
+				}
+				dureeDeTraitement = (System.currentTimeMillis()-debut);
+				this.grapheComplexite[actu] = dureeDeTraitement;
+				
+			}
+			
+		
+		}
+		else if(dejaViste && dejapresente==false){
+			
+			
+			cycle.removeAll(cycle);
+			//affichageGrapheElimination();
+			if(detectionCycle(actu,pred,actu,0)==false){
+				erreur="erreur dans la detection";
+				System.out.println("error");
+				//affichageGrapheElimination();
+			}
+		}
+		
+	}
+	
+	public boolean detectionCycle(int actu, int pred, int cible, int numInstance){
+		
+		
+		if( numInstance == 0){
+			for(int k =0; k<= grapheConstruction.get(actu).size()-1;k++){				
+				  
+					if(detectionCycle(grapheConstruction.get(actu).get(k).get(0), actu, cible,1)){
+						return true;
+					
+					}	
+				
+			}
+			
+			return false;
+		}
+		else if(actu!=cible){
+				if(grapheConstruction.get(actu).size()!=1){
+					for(int u =0; u<= grapheConstruction.get(actu).size()-1;u++){	
+						if(grapheConstruction.get(actu).get(u).get(0)==pred){
+							cycle.add(new ArrayList<Integer>());
+							cycle.get((cycle.size()-1)).add(actu);
+							cycle.get((cycle.size()-1)).add(pred);
+							cycle.get((cycle.size()-1)).add(grapheConstruction.get(actu).get(u).get(1));
+						}
+					}
+					for(int j =0; j<= grapheConstruction.get(actu).size()-1;j++){				
+						if(grapheConstruction.get(actu).get(j).get(0)!=pred && grapheConstruction.get(actu).get(j).get(0)==cible){ 
+							
+							if(detectionCycle(grapheConstruction.get(actu).get(j).get(0), actu, cible,1)){
+								return true;
+							}
+						}
+					}
+					for(int j =0; j<= grapheConstruction.get(actu).size()-1;j++){				
+						if(grapheConstruction.get(actu).get(j).get(0)!=pred){ 
+							
+							if(detectionCycle(grapheConstruction.get(actu).get(j).get(0), actu, cible,1)){
+								return true;
+							}
+						}
+					}
+				cycle.remove(cycle.size()-1);
+				return false;
+				}return false;
+			}
+			else{
+				
+				for(int u =0; u<= grapheConstruction.get(actu).size()-1;u++){	
+					if(grapheConstruction.get(actu).get(u).get(0)==pred){
+						cycle.add(new ArrayList<Integer>());
+						cycle.get((cycle.size()-1)).add(actu);
+						cycle.get((cycle.size()-1)).add(pred);
+						cycle.get((cycle.size()-1)).add(grapheConstruction.get(actu).get(u).get(1));
+					}
+				}
+				
+				int max=-1;
+				int numMax=-1;
+				int numMax2=-1;
+				for(int i=0; i<= cycle.size()-1;i++){
+					if(cycle.get(i).get(2)>max){
+						max = cycle.get(i).get(2);
+						numMax=cycle.get(i).get(0);
+						numMax2=cycle.get(i).get(1);
+					}				
+				}
+				for(int v = 0; v <= grapheConstruction.get(numMax).size()-1;v++){
+					if(grapheConstruction.get(numMax).get(v).get(0)==numMax2){
+						grapheConstruction.get(numMax).remove(v);
+					}
+				}
+				for(int b = 0; b <= grapheConstruction.get(numMax2).size()-1;b++){
+						if(grapheConstruction.get(numMax2).get(b).get(0)==numMax){
+							grapheConstruction.get(numMax2).remove(b);
+							
+						}
+					
+				}
+				return true;
+				
+			}
+		}
+	
+	public void affichageGrapheElimination() {
+		
+		System.out.println("Affichage de l'ArrayList ");
+		for (int i = 0; i < this.grapheConstruction.size(); i++) {
+			String affichage = "S " + i + " A : ";
+			for (int j = 0; j < this.grapheConstruction.get(i).size(); j++) {
+				for (int j2 = 0; j2 < this.grapheConstruction.get(i).get(j).size(); j2++) {
+					affichage += this.grapheConstruction.get(i).get(j).get(j2) + " ";
+				}
+
+			}
+			System.out.println(affichage);
+		}
+	}
+	
+	public void affichepoid(){
+		int cout = 0;
+		//parcours de la liste où se trouvent les sommets et les arrêtes
+		for(int j=0 ; j<= this.grapheConstruction.size()-1; j++){
+		 //parcours de la sous liste avec les sommets principaux
+		 for(int i=0 ; i<= this.grapheConstruction.get(j).size()-1; i++){
+		  cout+= this.grapheConstruction.get(j).get(i).get(1); //poids de l'arête 
+		 }
+		}
+		System.out.println(" poid = "+cout/2);
+	}
+	
+	public void initialisationGrapheConstruction() {
+		
+		for (int i = 0; i < this.nbNodes; i++) {
+			this.grapheConstruction.add(new ArrayList<ArrayList<Integer>>());
+		}
+	}
+	
+	public void recupererGraphe(){
+
+		  File f = new File ("primComplexite1000.txt");
+		  try
+		  {
+		      FileWriter fw = new FileWriter (f);
+		   
+		      for (int i = 0; i < this.grapheComplexite.length; i++) {
+		        fw.write(i + "\n"); 
+		      }      
+		      fw.write("------------\n");      
+		      for (int i = 0; i < this.grapheComplexite.length; i++) {
+		        long valeur = this.grapheComplexite[i];
+		        fw.write(valeur + "\n");   
+		     }
+		      System.out.println("Graphe récupéré");
+		      fw.close();
+		  }
+		  catch (IOException exception)
+		  { 
+		   System.out.println ("Erreur lors de la lecture : " + exception.getMessage());
+		  }
+		 }
+	
+	public static void main(String[] args) {
+		Graphe g = new Graphe("inst_v1000.dat");
+		Elimination eli = new Elimination(g.getList3D(),g.getNbNodes());
+		eli.EliminationDeCycle(0, -1);
+		//eli.affichageGrapheElimination();
+		eli.affichepoid();
+		eli.recupererGraphe();
+		
+	}
+	
+}

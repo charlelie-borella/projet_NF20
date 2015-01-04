@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename compilation unit &apos;projet_NF20.Cycle.java&apos; to &apos;Elimination.java&apos;&#x0A;- Original project: &apos;projet_NF20&apos;&#x0A;- Original element: &apos;projet_NF20.Cycle.java&apos;&#x0A;- Renamed element: &apos;projet_NF20.Elimination.java&apos;" description="Rename compilation unit &apos;Cycle.java&apos;" flags="2" id="org.eclipse.jdt.ui.rename.compilationunit" input="/src&lt;projet_NF20{Cycle.java" name="Elimination.java" references="false" stamp="1420404953948" version="1.0"/>
+</session>

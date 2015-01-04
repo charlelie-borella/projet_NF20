@@ -17,6 +17,11 @@ public class Graphe {
 	public Graphe(String file) {
 		String chaine = lireFichier(file);
 	}
+	
+	public int getNbNodes()
+	{
+		return this.nbNodes;
+	}
 
 	public void afficheMatrice() {
 		long debut = System.currentTimeMillis();
